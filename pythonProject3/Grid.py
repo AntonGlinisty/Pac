@@ -30,14 +30,13 @@ class Grid():
             print()
 
     def ScreenToGrid(self, screenCord):
-        return (screenCord[0]//40, screenCord[1]//40)
+        return (screenCord[0]//int(Globals.cell_side), screenCord[1]//int(Globals.cell_side))
 
     def GridToScreen(self, gridCord):
         return (gridCord[0] * Globals.cell_side, gridCord[1] * Globals.cell_side)
 
     def DrawCell(self, gridCord, button):
         screenCord = self.GridToScreen(gridCord)
-
         rect = pygame.Rect((screenCord[0], screenCord[1], Globals.cell_side, Globals.cell_side))
         if button == 0:
             pygame.draw.rect(Globals.screen, Globals.black, rect)
@@ -45,13 +44,13 @@ class Grid():
             pygame.draw.rect(Globals.screen, Globals.blue, rect)
 
     def DrawGrid(self):
-        for line_counter in range(15):
-            for column_counter in range(30):
+        for line_counter in range(int(Globals.field_height//Globals.cell_side)):
+            for column_counter in range(int(Globals.width//Globals.cell_side)):
                 self.DrawCell((column_counter, line_counter), int(self.grid[line_counter][column_counter]))
 
     def PacmanLocation(self, screenCord, motion):
         gridCord = self.ScreenToGrid(screenCord)
-        if gridCord[0] + 1 < 30:
+        if gridCord[0] + 1 < int(Globals.width//Globals.cell_side):
             self.grid[gridCord[1]][gridCord[0]] = 2
             if motion == Globals.LEFT and self.grid[gridCord[1]][gridCord[0] + 1] == 2:
                 self.grid[gridCord[1]][gridCord[0] + 1] = 0
@@ -61,6 +60,16 @@ class Grid():
                 self.grid[gridCord[1] + 1][gridCord[0]] = 0
             elif motion == Globals.DOWN and self.grid[gridCord[1] - 1][gridCord[0]] == 2:
                 self.grid[gridCord[1] - 1][gridCord[0]] = 0
+
+
+    def Score(self, score):
+        self.Cleaning()
+        f1 = pygame.font.Font(None, Globals.score_disp_width)
+        text1 = f1.render('Score : ' + str(score), True, Globals.red)
+        Globals.screen.blit(text1, Globals.score_disp_coords)
+
+    def Cleaning(self):
+        Globals.screen.blit(Globals.surf, Globals.score_disp_coords)
 
     def GridSave(self):
         f = open('new.txt', 'w+')
