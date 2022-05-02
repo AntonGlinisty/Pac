@@ -26,6 +26,7 @@ class Game():
     GRID = Grid()
     grid = Grid()
     FOOD = Food()
+    food = Food()
     GRID.DrawGrid()
     FOOD.DrawAllFood(GRID)
     U_block = 0
@@ -86,8 +87,9 @@ class Game():
 
             GRID.Score(score)
             (marker, marker4, iter_count, Globals.foodcounter, motion, score, marker7, marker8, marker9, marker10,
-             marker11, marker12, live) = FOOD.EndCheacker(Globals.foodcounter, grid, FOOD, pacman, blinky, inky, clyde,
-             marker, marker4, iter_count, motion, score, marker7, marker8, marker9, marker10, marker11, marker12, live)
+             marker11, marker12, live, GRID, FOOD) = FOOD.EndCheacker(Globals.foodcounter, GRID, FOOD, pacman, blinky,
+            inky, clyde, marker, marker4, iter_count, motion, score, marker7, marker8, marker9, marker10, marker11,
+                                                                      marker12, live, food, grid)
             if iter_count % Globals.pas_mode == 0:
                 if marker4:
                     marker4 = False

@@ -22,9 +22,11 @@ class Food(Grid):
                 self.DrawFood((column_counter, line_counter), int(GRID.grid[line_counter][column_counter]))
 
     def EndCheacker(self, foodcounter, GRID, FOOD, pacman, blinky, inky, clyde, marker, marker4, i, motion, score,
-                    marker7, marker8, marker9, marker10, marker11, marker12, live):
+                    marker7, marker8, marker9, marker10, marker11, marker12, live, food, grid):
         if foodcounter == 0:
             Globals.screen.blit(Globals.sf, (0, 0))
+            GRID = grid
+            FOOD = food
             GRID.DrawGrid()
             FOOD.DrawAllFood(GRID)
             pacman.rect.x = Globals.pac_spawnkord_x
@@ -41,4 +43,5 @@ class Food(Grid):
             foodcounter = 157
             motion = Globals.LEFT
             marker = marker4 = marker7 = marker8 = marker9 = marker10 = marker11 = marker12 = True
-        return (marker, marker4, i, foodcounter, motion, score, marker7, marker8, marker9, marker10, marker11, marker12, live)
+        return (marker, marker4, i, foodcounter, motion, score, marker7, marker8, marker9, marker10, marker11, marker12, live,
+                GRID, FOOD)
