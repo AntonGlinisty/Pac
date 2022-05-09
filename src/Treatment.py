@@ -17,7 +17,7 @@ class Treatment():
                 self.MouseDrawCell(event, GRID, button)
                 I_block = 0
             elif I_block == 1 and event.type == pygame.MOUSEBUTTONDOWN and U_block == 0:
-                self.MouseDrawFood(event, GRID, button, FOOD)
+                self.MouseDrawFood(event, GRID, FOOD)
 
                 U_block = 0
         return (motion, potential, U_block, I_block)
@@ -32,7 +32,7 @@ class Treatment():
                 motion = Globals.LEFT
                 potential = Globals.LEFT
         elif event.key == pygame.K_RIGHT:
-            if gridCord_RU[0] + 1 < 30:
+            if gridCord_RU[0] + 1 < Globals.width // Globals.cell_side:
                 if (GRID.grid[gridCord_RU[1]][gridCord_RU[0] + 1] == 1
                         or GRID.grid[gridCord_RD[1]][gridCord_RD[0] + 1] == 1):
                     potential = Globals.RIGHT
@@ -63,8 +63,9 @@ class Treatment():
     def MagicButtons(self, event, pacman, gridCord_LU, gridCord_RU, gridCord_LD, gridCord_RD, U_block, I_block, GRID):
         if event.key == pygame.K_o:
             print(gridCord_LU, gridCord_RU, gridCord_LD, gridCord_RD)
-            print((pacman.rect.x, pacman.rect.y), (pacman.rect.x + 39, pacman.rect.y),
-                  (pacman.rect.x, pacman.rect.y + 39), (pacman.rect.x + 39, pacman.rect.y + 39))
+            print((pacman.rect.x, pacman.rect.y), (pacman.rect.x + Globals.pacman_side - 1, pacman.rect.y),
+                  (pacman.rect.x, pacman.rect.y + Globals.pacman_side - 1), (pacman.rect.x + Globals.pacman_side - 1,
+                                                                             pacman.rect.y + Globals.pacman_side - 1))
         elif event.key == pygame.K_u:
             if U_block == 0:
                 U_block = 1
@@ -86,19 +87,19 @@ class Treatment():
         if event.button == 1:
             GRID.grid[gridCord[1]][gridCord[0]] = 1
             button = 1
-        elif event.button == 3:
+        elif event.button == Globals.yell_food_id:
             GRID.grid[gridCord[1]][gridCord[0]] = 0
             button = 0
         GRID.DrawCell(gridCord, button)
 
-    def MouseDrawFood(self, event, GRID, button, FOOD):
+    def MouseDrawFood(self, event, GRID, FOOD):
         gridCord = GRID.ScreenToGrid(event.pos)
         if event.button == 1:
             if GRID.grid[gridCord[1]][gridCord[0]] != 1:
-                GRID.grid[gridCord[1]][gridCord[0]] = 3
-                button = 3
+                GRID.grid[gridCord[1]][gridCord[0]] = Globals.yell_food_id
+                button = Globals.yell_food_id
                 FOOD.DrawFood(gridCord, button)
-        elif event.button == 3:
+        elif event.button == Globals.yell_food_id:
             if GRID.grid[gridCord[1]][gridCord[0]] != 1:
                 GRID.grid[gridCord[1]][gridCord[0]] = 0
                 screenCord = GRID.GridToScreen(gridCord)
@@ -141,32 +142,32 @@ class Treatment():
     def PacmanChangeDir(self, motion, direction, pacman):
         if motion == Globals.LEFT:
             if direction == Globals.RIGHT:
-                pacman.image = pygame.transform.rotate(pacman.image, 180)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_ei)
             elif direction == Globals.UP:
-                pacman.image = pygame.transform.rotate(pacman.image, 90)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_nin)
             elif direction == Globals.DOWN:
-                pacman.image = pygame.transform.rotate(pacman.image, 270)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_sev)
         elif motion == Globals.RIGHT:
             if direction == Globals.LEFT:
-                pacman.image = pygame.transform.rotate(pacman.image, 180)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_ei)
             elif direction == Globals.DOWN:
-                pacman.image = pygame.transform.rotate(pacman.image, 90)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_nin)
             elif direction == Globals.UP:
-                pacman.image = pygame.transform.rotate(pacman.image, 270)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_sev)
         elif motion == Globals.UP:
             if direction == Globals.DOWN:
-                pacman.image = pygame.transform.rotate(pacman.image, 180)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_ei)
             elif direction == Globals.RIGHT:
-                pacman.image = pygame.transform.rotate(pacman.image, 90)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_nin)
             elif direction == Globals.LEFT:
-                pacman.image = pygame.transform.rotate(pacman.image, 270)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_sev)
         elif motion == Globals.DOWN:
             if direction == Globals.UP:
-                pacman.image = pygame.transform.rotate(pacman.image, 180)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_ei)
             elif direction == Globals.LEFT:
-                pacman.image = pygame.transform.rotate(pacman.image, 90)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_nin)
             elif direction == Globals.RIGHT:
-                pacman.image = pygame.transform.rotate(pacman.image, 270)
+                pacman.image = pygame.transform.rotate(pacman.image, Globals.pac_turn_sev)
         if motion != Globals.STOP:
             direction = motion
         return (motion, direction)
@@ -210,28 +211,28 @@ class Treatment():
 
     def PacmanEat(self, motion, GRID, pacman, gridCord_LU, gridCord_RU, gridCord_LD, gridCord_RD, score, foodcounter):
         if gridCord_RU[0] + 1 < int(Globals.width // Globals.cell_side):
-            if motion == Globals.LEFT and GRID.grid[gridCord_LU[1]][gridCord_LU[0]] == 3:
-                if pacman.rect.x % int(Globals.cell_side) == int(Globals.cell_side) // 2 + 4:
+            if motion == Globals.LEFT and GRID.grid[gridCord_LU[1]][gridCord_LU[0]] == Globals.yell_food_id:
+                if pacman.rect.x % int(Globals.cell_side) == int(Globals.cell_side) // 2 + Globals.food_ind:
                     GRID.grid[gridCord_LU[1]][gridCord_LU[0]] = 0
-                    Food.DrawFood(Food, gridCord_LU, 4)
+                    Food.DrawFood(Food, gridCord_LU, Globals.black_food_id)
                     score += Globals.bonus1
                     foodcounter -= 1
-            if motion == Globals.RIGHT and GRID.grid[gridCord_RU[1]][gridCord_RU[0]] == 3:
-                if pacman.rect.x % int(Globals.cell_side) == int(Globals.cell_side) // 2 - 4:
+            if motion == Globals.RIGHT and GRID.grid[gridCord_RU[1]][gridCord_RU[0]] == Globals.yell_food_id:
+                if pacman.rect.x % int(Globals.cell_side) == int(Globals.cell_side) // 2 - Globals.food_ind:
                     GRID.grid[gridCord_RU[1]][gridCord_RU[0]] = 0
-                    Food.DrawFood(Food, gridCord_RU, 4)
+                    Food.DrawFood(Food, gridCord_RU, Globals.black_food_id)
                     score += Globals.bonus1
                     foodcounter -= 1
-            if motion == Globals.UP and GRID.grid[gridCord_LU[1]][gridCord_LU[0]] == 3:
-                if pacman.rect.y % int(Globals.cell_side) == int(Globals.cell_side) // 2 + 4:
+            if motion == Globals.UP and GRID.grid[gridCord_LU[1]][gridCord_LU[0]] == Globals.yell_food_id:
+                if pacman.rect.y % int(Globals.cell_side) == int(Globals.cell_side) // 2 + Globals.food_ind:
                     GRID.grid[gridCord_LU[1]][gridCord_LU[0]] = 0
-                    Food.DrawFood(Food, gridCord_LU, 4)
+                    Food.DrawFood(Food, gridCord_LU, Globals.black_food_id)
                     score += Globals.bonus1
                     foodcounter -= 1
-            if motion == Globals.DOWN and GRID.grid[gridCord_LD[1]][gridCord_LD[0]] == 3:
-                if pacman.rect.y % int(Globals.cell_side) == int(Globals.cell_side) // 2 - 4:
+            if motion == Globals.DOWN and GRID.grid[gridCord_LD[1]][gridCord_LD[0]] == Globals.yell_food_id:
+                if pacman.rect.y % int(Globals.cell_side) == int(Globals.cell_side) // 2 - Globals.food_ind:
                     GRID.grid[gridCord_RD[1]][gridCord_RD[0]] = 0
-                    Food.DrawFood(Food, gridCord_RD, 4)
+                    Food.DrawFood(Food, gridCord_RD, Globals.black_food_id)
                     score += Globals.bonus1
                     foodcounter -= 1
         return (GRID, score, foodcounter)

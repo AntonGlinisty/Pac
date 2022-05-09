@@ -1,5 +1,3 @@
-import sys
-
 import pygame
 from Globals import Globals
 from Grid import Grid
@@ -7,12 +5,10 @@ from Pacman import Pacman
 from Treatment import Treatment
 from Food import Food
 from Ghosts import Ghosts
-from collections import deque
 from datetime import datetime
 
 
 class Game():
-
     clock = pygame.time.Clock()
     all_sprites = pygame.sprite.Group()
     pacman = Pacman()
@@ -24,9 +20,7 @@ class Game():
     all_sprites.add(pacman)
     all_sprites.add(blinky)
     GRID = Grid()
-    grid = Grid()
     FOOD = Food()
-    food = Food()
     GRID.DrawGrid()
     FOOD.DrawAllFood(GRID)
     U_block = 0
@@ -46,7 +40,7 @@ class Game():
     graphbl, goalbl, queuebl, visitedbl = blinky.Alg(GRID, gridCord_b)
     graphcl, goalcl, queuecl, visitedcl = clyde.Alg(GRID, gridCord_b)
     listofPacpassed = []
-    live = 3
+    live = Globals.lives_stat
     marker = marker2 = marker3 = marker4 = marker5 = marker6 = marker7 = marker8 = marker9 = marker10 = marker11 = \
         marker12 = True
     bl_movement = cl_movement = in_movement = Globals.STOP
@@ -89,7 +83,7 @@ class Game():
             (marker, marker4, iter_count, Globals.foodcounter, motion, score, marker7, marker8, marker9, marker10,
              marker11, marker12, live, GRID, FOOD) = FOOD.EndCheacker(Globals.foodcounter, GRID, FOOD, pacman, blinky,
             inky, clyde, marker, marker4, iter_count, motion, score, marker7, marker8, marker9, marker10, marker11,
-                                                                      marker12, live, food, grid)
+                                                                      marker12, live)
             if iter_count % Globals.pas_mode == 0:
                 if marker4:
                     marker4 = False
@@ -170,7 +164,7 @@ class Game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     Globals.running = False
-            if datetime.now().second - start >= 2:
+            if datetime.now().second - start >= Globals.wastedtime:
                 marker = True
                 Globals.screen.blit(Globals.sf, (0, 0))
                 GRID.DrawGrid()

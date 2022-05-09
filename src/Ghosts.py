@@ -46,7 +46,7 @@ class Ghosts(pygame.sprite.Sprite):
         return buf
 
     def Nextgoal(self, gridCord, listofPacpassed, graph, GRID, visited, goal, nextgoal):
-        if self.rect.center[0] % 40 == 20:
+        if self.rect.center[0] % Globals.cell_side == Globals.cell_side // 2:
             marker = True
         else:
             marker = False
@@ -62,7 +62,7 @@ class Ghosts(pygame.sprite.Sprite):
                     nextgoal = (cords[0], cords[1] + 1)
                 elif GRID.grid[cords[1] - 1][cords[0]] == 0:
                     nextgoal = (cords[0], cords[1] - 1)
-                if self.rect.x < 1200:
+                if self.rect.x < Globals.width:
                     if GRID.grid[cords[1]][cords[0] + 1] == 0:
                         nextgoal = (cords[0] + 1, cords[1])
                 if self.rect.x > 0:
@@ -74,18 +74,19 @@ class Ghosts(pygame.sprite.Sprite):
 
     def GhostsPotential(self, nextgoal, gh_movement, Grid):
         nextscreen = Grid.GridToScreen(nextgoal)
-        if self.rect.center[1] % 40 == 20 and self.rect.center[0] % 40 == 20:
-            if nextgoal[0] > 30 or nextgoal[0] < 0:
+        if self.rect.center[1] % Globals.cell_side == Globals.cell_side // 2 and self.rect.center[0] % \
+                Globals.cell_side == Globals.cell_side // 2:
+            if nextgoal[0] > Globals.width // Globals.cell_side or nextgoal[0] < 0:
                 return gh_movement
             elif Grid.grid[nextgoal[1]][nextgoal[0]] == 1:
                 gh_movement = Globals.STOP
                 return gh_movement
-        if self.rect.center[1] % 40 == 20:
+        if self.rect.center[1] % Globals.cell_side == Globals.cell_side // 2 :
             if nextscreen[0] > self.rect.x:
                 gh_movement = Globals.RIGHT
             elif nextscreen[0] < self.rect.x:
                 gh_movement = Globals.LEFT
-        if self.rect.center[0] % 40 == 20:
+        if self.rect.center[0] % Globals.cell_side == Globals.cell_side // 2 :
             if nextscreen[1] > self.rect.y:
                 gh_movement = Globals.DOWN
             elif nextscreen[1] < self.rect.y:
@@ -94,7 +95,7 @@ class Ghosts(pygame.sprite.Sprite):
 
     def Catcher(self, pacmancords, ghostcords, live):
         if ((ghostcords[1] - pacmancords[1]) * (ghostcords[1] - pacmancords[1]) + (ghostcords[0] - pacmancords[0]) *
-                                                                            (ghostcords[0] - pacmancords[0]) <= 1600):
+                (ghostcords[0] - pacmancords[0]) <= Globals.cell_side * Globals.cell_side):
             return live - 1, True
         return live, False
 
@@ -114,11 +115,15 @@ class Ghosts(pygame.sprite.Sprite):
         cord2 = cords[1]
         while running:
             if GRID.ScreenToGrid((self.rect.x, self.rect.y)) == cords or cords == (0, 0):
-                cord1 = random.randint(0, 28)
-                cord2 = random.randint(1, 13)
+                cord1 = random.randint(0, Globals.rand_x_max)
+                cord2 = random.randint(1, Globals.rand_y_max)
                 if GRID.grid[cord2][cord1] == 0:
-                    if cord1 == 11 and cord2 == 11 or 9 <= cord1 <= 11 and 6 <= cord2 <= 7 or \
-                            15 <= cord1 <= 17 and 5 <= cord2 <= 6 or cord1 == 3 and cord2 == 3:
+                    if cord1 == Globals.up_hole_x and cord2 == Globals.up_hole_y or \
+                            Globals.left_hole_x_min <= cord1 <= Globals.left_hole_x_max and \
+                            Globals.left_hole_y_min <= cord2 <= Globals.left_hole_y_max or \
+                            Globals.right_hole_x_min <= cord1 <= Globals.right_hole_x_max and \
+                            Globals.right_hole_y_min <= cord2 <= Globals.right_hole_y_max or \
+                            cord1 == Globals.down_hole_x and cord2 == Globals.down_hole_y:
                         continue
                 if GRID.grid[cord2][cord1] == 1:
                     continue
@@ -148,7 +153,7 @@ class Ghosts(pygame.sprite.Sprite):
         return graph, goal, queue, visited
 
     def InkyGoal(self, pacmotion, pacman, gridCord, graph, GRID, visited, goal, nextgoal):
-        if self.rect.center[0] % 40 == 20:
+        if self.rect.center[0] % Globals.cell_side == Globals.cell_side // 2:
             marker = True
         else:
             marker = False
@@ -171,7 +176,8 @@ class Ghosts(pygame.sprite.Sprite):
     def Leftgoal(self, GRID, paccords, selfcords, graph, goal, visited, gridCord):
         if paccords[0] >= 2 and GRID.grid[paccords[1]][paccords[0] - 1] == \
                 GRID.grid[paccords[1]][paccords[0] - 2] != 1 and (paccords[0] - 2, paccords[1]) != selfcords \
-                and (paccords[0] - 1, paccords[1]) != selfcords and (paccords[0] - 3, paccords[1]) != selfcords:
+                and (paccords[0] - 1, paccords[1]) != selfcords and \
+                (paccords[0] - Globals.inky_pred3, paccords[1]) != selfcords:
             path_segment = self.funkforgame(gridCord, (paccords[0] - 2, paccords[1]),
                                             graph, GRID, visited, goal)[::-1]
             path_segment.append((paccords[0] - 2, paccords[1]))
@@ -187,13 +193,14 @@ class Ghosts(pygame.sprite.Sprite):
         return path_segment
 
     def Rightgoal(self, GRID, paccords, selfcords, graph, goal, visited, gridCord):
-        if paccords[0] <= 27 and GRID.grid[paccords[1]][paccords[0] + 1] == \
+        if paccords[0] <= Globals.right_x_max and GRID.grid[paccords[1]][paccords[0] + 1] == \
                 GRID.grid[paccords[1]][paccords[0] + 2] != 1 and (paccords[0] + 2, paccords[1]) != selfcords \
-                and (paccords[0] + 1, paccords[1]) != selfcords and (paccords[0] + 3, paccords[1]) != selfcords:
+                and (paccords[0] + 1, paccords[1]) != selfcords and \
+                (paccords[0] + Globals.inky_pred3, paccords[1]) != selfcords:
             path_segment = self.funkforgame(gridCord, (paccords[0] + 2, paccords[1]),
                                             graph, GRID, visited, goal)[::-1]
             path_segment.append((paccords[0] + 2, paccords[1]))
-        elif paccords[0] <= 27 and GRID.grid[paccords[1]][paccords[0] + 1] != 1 and \
+        elif paccords[0] <= Globals.right_x_max and GRID.grid[paccords[1]][paccords[0] + 1] != 1 and \
                 GRID.grid[paccords[1]][paccords[0] + 2] == 1 and (paccords[0] + 1, paccords[1]) != selfcords \
                 and (paccords[0] + 2, paccords[1]) != selfcords:
             path_segment = self.funkforgame(gridCord, (paccords[0] + 1, paccords[1]),
@@ -207,7 +214,8 @@ class Ghosts(pygame.sprite.Sprite):
     def Upgoal(self, GRID, paccords, selfcords, graph, goal, visited, gridCord):
         if paccords[1] >= 2 and GRID.grid[paccords[1] - 1][paccords[0]] == \
                 GRID.grid[paccords[1] - 2][paccords[0]] != 1 and (paccords[0], paccords[1] - 2) != selfcords \
-                and (paccords[0], paccords[1] - 1) != selfcords and (paccords[0], paccords[1] - 3) != selfcords:
+                and (paccords[0], paccords[1] - 1) != selfcords and \
+                (paccords[0], paccords[1] - Globals.inky_pred3) != selfcords:
             path_segment = self.funkforgame(gridCord, (paccords[0], paccords[1] - 2),
                                             graph, GRID, visited, goal)[::-1]
             path_segment.append((paccords[0], paccords[1] - 2))
@@ -223,13 +231,14 @@ class Ghosts(pygame.sprite.Sprite):
         return path_segment
 
     def Downgoal(self, GRID, paccords, selfcords, graph, goal, visited, gridCord):
-        if paccords[1] <= 12 and GRID.grid[paccords[1] + 1][paccords[0]] == \
+        if paccords[1] <= Globals.down_ink_max and GRID.grid[paccords[1] + 1][paccords[0]] == \
                 GRID.grid[paccords[1] + 2][paccords[0]] != 1 and (paccords[0], paccords[1] + 2) != selfcords \
-                and (paccords[0], paccords[1] + 1) != selfcords and (paccords[0], paccords[1] + 3) != selfcords:
+                and (paccords[0], paccords[1] + 1) != selfcords and \
+                (paccords[0], paccords[1] + Globals.inky_pred3) != selfcords:
             path_segment = self.funkforgame(gridCord, (paccords[0], paccords[1] + 2),
                                             graph, GRID, visited, goal)[::-1]
             path_segment.append((paccords[0], paccords[1] + 2))
-        elif paccords[1] <= 12 and GRID.grid[paccords[1] + 1][paccords[0]] != 1 and \
+        elif paccords[1] <= Globals.down_ink_max and GRID.grid[paccords[1] + 1][paccords[0]] != 1 and \
                 GRID.grid[paccords[1] + 2][paccords[0]] == 1 and (paccords[0], paccords[1] + 1) != selfcords \
                 and (paccords[0], paccords[1] + 2) != selfcords:
             path_segment = self.funkforgame(gridCord, (paccords[0], paccords[1] + 1),
@@ -241,23 +250,26 @@ class Ghosts(pygame.sprite.Sprite):
         return path_segment
 
     def StarterGoal(self, GRID, gridCord, graph, visited, goal, marker, clozer, nextgoal):
-        GRID.grid[4][16] = 0
-        GRID.DrawCell((16, 4), GRID.grid[16][4])
-        if nextgoal != (16, 3):
-            path_segment = self.funkforgame(gridCord, (16, 5), graph, GRID, visited, goal)[::-1]
+        GRID.grid[Globals.gh_start_y][Globals.gh_start_x] = 0
+        GRID.DrawCell((Globals.gh_start_x, Globals.gh_start_y), GRID.grid[Globals.gh_start_x][Globals.gh_start_y])
+        if nextgoal != (Globals.gh_start_x, Globals.gh_start_y - 1):
+            path_segment = self.funkforgame(gridCord, (Globals.gh_start_x, Globals.gh_start_y + 1), graph, GRID,
+                                            visited, goal)[::-1]
             path_segment = path_segment[1:]
-            path_segment.append((16, 5))
+            path_segment.append((Globals.gh_start_x, Globals.gh_start_y + 1))
             if len(path_segment) == 1:
                 nextgoal = path_segment[0]
             else:
                 nextgoal = path_segment[1]
-            if GRID.ScreenToGrid((self.rect.center)) == (16, 5) and self.rect.x % 40 == 0 and self.rect.y % 40 == 0:
-                nextgoal = (16, 3)
-        if GRID.ScreenToGrid((self.rect.center)) == (16, 3) and self.rect.x % 40 == 0 and self.rect.y % 40 == 0:
+            if GRID.ScreenToGrid((self.rect.center)) == (Globals.gh_start_x, Globals.gh_start_y + 1) and \
+                    self.rect.x % Globals.cell_side == 0 and self.rect.y % Globals.cell_side == 0:
+                nextgoal = (Globals.gh_start_x, Globals.gh_start_y - 1)
+        if GRID.ScreenToGrid((self.rect.center)) == (Globals.gh_start_x, Globals.gh_start_y - 1) and \
+                self.rect.x % Globals.cell_side == 0 and self.rect.y % Globals.cell_side == 0:
             marker = False
             clozer = False
-            GRID.grid[4][16] = 1
-            GRID.DrawCell((16, 4), GRID.grid[16][4])
+            GRID.grid[Globals.gh_start_y][Globals.gh_start_x] = 1
+            GRID.DrawCell((Globals.gh_start_x, Globals.gh_start_y), GRID.grid[Globals.gh_start_x][Globals.gh_start_y])
         return marker, nextgoal, clozer
 
     def GoalSearcher(self, path_segment, GRID, nextgoal):
@@ -270,7 +282,7 @@ class Ghosts(pygame.sprite.Sprite):
                 nextgoal = (cords[0], cords[1] + 1)
             elif GRID.grid[cords[1] - 1][cords[0]] == 0:
                 nextgoal = (cords[0], cords[1] - 1)
-            if self.rect.x < 1200:
+            if self.rect.x < Globals.width:
                 if GRID.grid[cords[1]][cords[0] + 1] == 0:
                     nextgoal = (cords[0] + 1, cords[1])
             if self.rect.x > 0:

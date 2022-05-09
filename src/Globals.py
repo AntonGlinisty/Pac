@@ -80,3 +80,41 @@ class Globals():
     pas_mode = 500
     agr_mode = 1500
     cleaner_count = 20
+
+    wastedtime = 2
+    gh_start_x = 16
+    gh_start_y = 4
+    rand_x_max = 28
+    rand_y_max = 13
+    up_hole_x = 11
+    up_hole_y = 11
+    down_hole_x = 3
+    down_hole_y = 3
+    left_hole_x_min = 9
+    left_hole_x_max = 11
+    left_hole_y_min = 6
+    left_hole_y_max = 7
+    right_hole_x_min = 15
+    right_hole_x_max = 17
+    right_hole_y_min = 5
+    right_hole_y_max = 6
+    down_ink_max = 12
+    right_x_max = 27
+
+    food_size = 5
+    lives_stat = 3
+    food_count_stat = 157
+
+    yell_food_id = 3
+    black_food_id = 4
+    heart_x_spawn = 900
+    heart_ind = 100
+    heart_y_spawn = 610
+    round_x_max = 1140
+    pac_turn_nin = 90
+    pac_turn_ei = 180
+    pac_turn_sev = 270
+
+    food_ind = 4
+    inky_pred3 = 3
+    Background = 'images/muz2.mp3'
