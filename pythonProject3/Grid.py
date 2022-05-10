@@ -10,7 +10,13 @@ class Grid():
     def GridFilling(self):
         file_line_counter = -1
         line_symbol_counter = -1
-        with open("new.txt", "r") as f:
+        f1 = open("new.txt1", "r")
+        f0 = open("new.txt0", "w")
+        for line in f1.readlines():
+            f0.write(line)
+        f1.close()
+        f0.close()
+        with open("new.txt0", "r") as f:
             for line in f.readlines():
                 file_line_counter += 1
                 for symbol in line:
@@ -61,7 +67,6 @@ class Grid():
             elif motion == Globals.DOWN and self.grid[gridCord[1] - 1][gridCord[0]] == 2:
                 self.grid[gridCord[1] - 1][gridCord[0]] = 0
 
-
     def Score(self, score):
         self.Cleaning()
         f1 = pygame.font.Font(None, Globals.score_disp_width)
@@ -72,9 +77,14 @@ class Grid():
         Globals.screen.blit(Globals.surf, Globals.score_disp_coords)
 
     def GridSave(self):
-        f = open('new.txt', 'w+')
+        f = open('new.txt0', 'w+')
         for i in range(len(self.grid)):
             for j in range(len(self.grid[i])):
                 a = self.grid[i][j]
                 f.write(str(a))
             f.write('\n')
+
+    def Hearts(self, number):
+        for i in range(number):
+            Globals.screen.blit(Globals.heart, (900 + i * 100, 610))
+

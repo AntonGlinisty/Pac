@@ -32,6 +32,8 @@ class Globals():
     player_img_down = pygame.image.load(os.path.join(img_folder, 'pix.down.png'))
     player_img_mouth = pygame.image.load(os.path.join(img_folder, 'pixil-frame-0.png'))
     red_gh_left = pygame.image.load(os.path.join(img_folder, 'red_l.png'))
+    heart = pygame.image.load(os.path.join(img_folder, 'toppng.com-8-bit-heart-pixel-heart-673x601.png'))
+    heart = pygame.transform.scale(heart, (60, 60))
 
     pacman_size = player_img_left.get_width() // 7.5, player_img_left.get_height() // 7.5
     pacman_side = pacman_size[0]
@@ -58,3 +60,6 @@ class Globals():
     bonus1 = 100
     score_disp_width = 50
     score_disp_coords = (10, 620)
+
+    marker1 = True
+    sf = pygame.Surface((width, height))
