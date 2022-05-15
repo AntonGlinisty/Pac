@@ -31,7 +31,7 @@ class Ghosts(pygame.sprite.Sprite):
 
     def funkforgame(self, gridCord, mycords, graph, GRID, visited, goal, gridCord_RU):
         if gridCord_RU[0] + 1 < int(Globals.width // Globals.cell_side):
-            if GRID.grid[gridCord[1]][gridCord[0]] == 0 or GRID.grid[gridCord[1]][gridCord[0]] == 3:
+            if GRID.grid[gridCord[1]][gridCord[0]] == 0:
                 queue, visited = self.bfs(gridCord, mycords, graph)
                 goal = mycords
         path_head, path_segment = goal, goal
@@ -74,7 +74,6 @@ class Ghosts(pygame.sprite.Sprite):
             self.rect.y -= Globals.speed
         elif patt[1] > self.rect.y and self.rect.x % 40 == 0:
             self.rect.y += Globals.speed
-
     def Delete(self):
         rect = pygame.Rect((self.rect.x, self.rect.y, Globals.pacman_side, Globals.pacman_side))
         pygame.draw.rect(Globals.screen, Globals.black, rect)
@@ -88,15 +87,19 @@ class Ghosts(pygame.sprite.Sprite):
         #     return Inky
         # if type == 'clyde':
         #     return Clyde
-
     def Blinky(self):
         self.image = pygame.transform.scale(Globals.red_gh_left, Globals.ghosts_size)
         self.rect = self.image.get_rect()
         self.rect.x = Globals.r_gh_spawnkord_x
         self.rect.y = Globals.r_gh_spawnkord_y
 
+
+
+
+
 # class Inky():
 #
 # class Pinky():
 #
+# class Clyde():
 # class Clyde():
