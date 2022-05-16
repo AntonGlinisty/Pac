@@ -21,7 +21,7 @@ class Grid():
                 file_line_counter += 1
                 for symbol in line:
                     line_symbol_counter += 1
-                    if line_symbol_counter == 30:
+                    if line_symbol_counter == Globals.width // Globals.cell_side:
                         break
                     if int(symbol) == int(2):
                         self.grid[file_line_counter][line_symbol_counter] = 0
@@ -74,7 +74,7 @@ class Grid():
         Globals.screen.blit(text1, Globals.score_disp_coords)
 
     def Cleaning(self):
-        Globals.screen.blit(Globals.surf, Globals.score_disp_coords)
+        Globals.screen.blit(Globals.surf, Globals.cleaning_coords)
 
     def GridSave(self):
         f = open('new.txt0', 'w+')
@@ -86,5 +86,23 @@ class Grid():
 
     def Hearts(self, number):
         for i in range(number):
-            Globals.screen.blit(Globals.heart, (900 + i * 100, 610))
+            Globals.screen.blit(Globals.heart, (Globals.heart_x_spawn + i * Globals.heart_ind, Globals.heart_y_spawn))
 
+    def RoundDrawer(self, gridCords, ghost):
+        if 0 < ghost.rect.x < Globals.round_x_max:
+            self.DrawCell((gridCords[0] + 1, gridCords[1]), int(self.grid[gridCords[1]][gridCords[0] + 1]))
+            self.DrawCell((gridCords[0], gridCords[1] + 1), int(self.grid[gridCords[1] + 1][gridCords[0]]))
+            self.DrawCell((gridCords[0] - 1, gridCords[1]), int(self.grid[gridCords[1]][gridCords[0] - 1]))
+            self.DrawCell((gridCords[0], gridCords[1] - 1), int(self.grid[gridCords[1] - 1][gridCords[0]]))
+            self.DrawCell((gridCords[0] + 1, gridCords[1] + 1), int(self.grid[gridCords[1] + 1][gridCords[0] + 1]))
+            self.DrawCell((gridCords[0] - 1, gridCords[1] + 1), int(self.grid[gridCords[1] + 1][gridCords[0] - 1]))
+            self.DrawCell((gridCords[0] - 1, gridCords[1] - 1), int(self.grid[gridCords[1] - 1][gridCords[0] - 1]))
+            self.DrawCell((gridCords[0] + 1, gridCords[1] - 1), int(self.grid[gridCords[1] - 1][gridCords[0] + 1]))
+
+    def Mode(self, marker):
+        f1 = pygame.font.Font(None, Globals.score_disp_width)
+        if marker:
+            text1 = f1.render('Mode : passive', True, Globals.red)
+        else:
+            text1 = f1.render('Mode : aggressive', True, Globals.red)
+        Globals.screen.blit(text1, Globals.mode_disp_coords)
