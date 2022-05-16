@@ -14,3 +14,4 @@ class Pacman(pygame.sprite.Sprite):
     def Delete(self):
         rect = pygame.Rect((self.rect.x, self.rect.y, Globals.pacman_side, Globals.pacman_side))
         pygame.draw.rect(Globals.screen, Globals.black, rect)
+
